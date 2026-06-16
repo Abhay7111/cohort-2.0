@@ -1,0 +1,42 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --top: 50%;
+  --left: 50%;
+  --size: 400px;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  background-color: #222;
+}
+html ::-webkit-scrollbar, body ::-webkit-scrollbar {
+  display: none;
+}
+html .torch, body .torch {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  z-index: 99;
+  background: radial-gradient(var(--size) circle at var(--left) var(--top), transparent, rgba(0, 0, 0, 0.8823529412));
+  cursor: none;
+}
+html .main, body .main {
+  width: 100%;
+  height: 100%;
+}
+html .main img, body .main img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+}/*# sourceMappingURL=style.css.map */

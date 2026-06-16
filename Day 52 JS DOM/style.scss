@@ -1,0 +1,44 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root{
+    --top: 50%;
+    --left: 50%;
+    --size: 400px;
+}
+
+html, body{
+    width: 100vw;
+    height: 100vh;
+    background-color: #222;
+    ::-webkit-scrollbar{
+        display: none;
+    }
+
+    .torch{
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0%;
+        left: 0%;
+        z-index:99;
+        background: radial-gradient(var(--size) circle at var(--left) var(--top) , transparent, #000000e1);
+        cursor: none;
+    }
+
+    .main{
+        width: 100%;
+        height: 100%;
+
+        img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+    }
+}
+

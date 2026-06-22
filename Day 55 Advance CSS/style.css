@@ -9,42 +9,48 @@ html, body {
   width: 100vw;
   height: 100vh;
   background-color: black;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  anchor-name: --position;
 }
 html .main, body .main {
   width: -moz-fit-content;
   width: fit-content;
   height: 40px;
   background-color: whitesmoke;
-  border-radius: 30px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px;
+  padding: 2px;
+  anchor-name: --position;
 }
 html .main .box, body .main .box {
-  width: 60px;
+  min-width: 60px;
   height: 100%;
   background-color: rgb(0, 0, 0);
-  border-radius: 26px;
+  border-radius: 10px;
   position: relative;
+  padding: 0 12px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 html .main .box:hover, body .main .box:hover {
   anchor-name: --position;
 }
 html .anchor, body .anchor {
   background-color: white;
+  border-radius: 12px;
   position: absolute;
   top: anchor(top);
   bottom: anchor(bottom);
   left: anchor(left);
   right: anchor(right);
   position-anchor: --position;
-  transition: all 0.1s ease;
+  transition: all 0.3s ease;
   mix-blend-mode: difference;
   pointer-events: none;
 }/*# sourceMappingURL=style.css.map */

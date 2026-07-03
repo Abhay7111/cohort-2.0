@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        })
+    </script>
+</head>
+<body>
+    <div id="window" class="window-main">
+
+        <nav>
+            <div id="windowButton" class="icons"><img src="https://www.citypng.com/public/uploads/preview/hd-windows-11-logo-icon-transparent-background-701751694967888zqtluh5aaw.png?v=2026051008" alt="window"></div>
+            <div id="facebookButton" class="icons"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0-3dpqBl4z6U9zaTGJZzEaFJnMjDEaQTDqhobS2NXylhJyM_XUq_vCntI&s=10" alt="facebook"></div>
+            <div id="chromeButton" class="icons"><img src="https://p7.hiclipart.com/preview/425/124/983/google-chrome-web-browser-logo-computer-icons-chrome.jpg" alt="chrome"></div>
+        </nav>
+
+        <div id="openfacebook" class="openapppopup">facebook</div>
+        <div id="openchrome" class="openapppopup">Chrome</div>
+        <div id="openwindow" class="openapppopup">Window</div>
+        <div class="contextMenupop"></div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

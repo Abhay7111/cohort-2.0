@@ -1,0 +1,83 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+:root {
+  --top: 10px;
+  --left: 20px;
+}
+
+.window-main {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  background: url("./images/wallpaper.jpg");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.window-main nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 20;
+}
+.window-main nav .icons {
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.window-main nav .icons img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.window-main .openapppopup {
+  width: 40px;
+  height: 40px;
+  background-color: red;
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  z-index: 9;
+  transition: all 0.1s linear;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0rem;
+}
+.window-main .contextMenupop {
+  width: 200px;
+  height: 350px;
+  border-radius: 20px;
+  background-color: rgb(241, 241, 241);
+  border: 2px solid #585858;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  transition: all 0.1s;
+  z-index: 99;
+}/*# sourceMappingURL=style.css.map */

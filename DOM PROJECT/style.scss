@@ -1,0 +1,87 @@
+@font-face {
+    font-family: Aeonik;
+    font-weight: 500;
+    src: url(./AeonikTRIAL-Regular.otf);
+}
+@font-face {
+    font-family: Aeonik;
+    font-weight: 200;
+    src: url(./AeonikTRIAL-Light.otf);
+}
+@font-face {
+    font-family: Aeonik;
+    font-weight: 700;
+    src: url(./AeonikTRIAL-Bold.otf);
+}
+
+
+:root{
+    --prim: #EDEDCE;
+    --sec: #0C2C55;
+}
+
+*{
+    padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    font-family: Aeonik;
+    font-weight: 500;
+}
+
+html, body{
+    width: 100vw;
+    height: 100vh;
+
+    ::-webkit-scrollbar{
+        display: none;
+    }
+    
+    .main{
+        width: 100%;
+        height: 100%;
+        background-color: var(--sec);
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 30px;
+        padding: 20px;
+
+        .allElem{
+            width: 300px;
+            height: 300px;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+
+            img{
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                pointer-events: none;
+            }
+            
+            h2{
+                position: absolute;
+                bottom: 10px;
+                right: 15px;
+                pointer-events: none;
+                color: var(--prim);
+            }
+        }
+    }
+
+    .allElemDetails{
+        display: none;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0%;
+        left: 0%;
+        background-color: var(--sec);
+        z-index: 99;
+
+        .elemDetail{
+            display: none;
+        }
+    }
+}

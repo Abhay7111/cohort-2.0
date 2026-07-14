@@ -49,6 +49,11 @@ html .main .allElem, body .main .allElem {
   border-radius: 20px;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+html .main .allElem:active, body .main .allElem:active {
+  scale: 0.97;
 }
 html .main .allElem img, body .main .allElem img {
   width: 100%;
@@ -73,7 +78,29 @@ html .allElemDetails, body .allElemDetails {
   left: 0%;
   background-color: var(--sec);
   z-index: 99;
+  color: white;
 }
 html .allElemDetails .elemDetail, body .allElemDetails .elemDetail {
   display: none;
+}
+html .allElemDetails .elemDetailMain, body .allElemDetails .elemDetailMain {
+  width: 100%;
+  height: 100vh;
+  position: relative; 
+  padding-top: 20px;
+}
+html .allElemDetails .elemDetailMain .ri-close-line, body .allElemDetails .elemDetailMain .ri-close-line {
+  background-color: #F3E4C9;
+  color: #0C2C55;
+  font-size: 1.5rem;
+  padding: 5px;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  border-radius: 50%;
+  transition: all 0.1s linear;
+  cursor: pointer;
+}
+html .allElemDetails .elemDetailMain .ri-close-line:active, body .allElemDetails .elemDetailMain .ri-close-line:active {
+  scale: 0.9;
 }/*# sourceMappingURL=style.css.map */

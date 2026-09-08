@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced API Performance & Analytics Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- html2pdf for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- html2canvas for Image export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        .badge { @apply px-2.5 py-1 rounded-full text-xs font-semibold inline-block; }
+        .badge-200 { @apply bg-emerald-100 text-emerald-800 border border-emerald-300; }
+        .badge-404 { @apply bg-rose-100 text-rose-800 border border-rose-300; }
+        .badge-other { @apply bg-amber-100 text-amber-800 border border-amber-300; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 p-4 sm:p-8">
+
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Input & Control Panel -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h1 class="text-xl font-bold text-slate-900 mb-2">API Analytics Suite & Report Generator</h1>
+            <p class="text-sm text-slate-500 mb-4">Paste your raw API test JSON data below to generate interactive charts, run diagnostic tools, and export reports.</p>
+            
+            <textarea id="jsonInput" rows="6" class="w-full p-3 font-mono text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" placeholder="Paste your JSON data here..."></textarea>
+            
+            <div class="mt-4 flex flex-wrap gap-3 items-center justify-between">
+                <div class="flex gap-2">
+                    <button onclick="renderDashboard()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-lg shadow-sm transition">
+                        Generate Analytics & Graphs
+                    </button>
+                    <button onclick="loadSampleData()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-sm rounded-lg transition">
+                        Load Current Sample Data
+                    </button>
+                </div>
+                
+                <div id="exportButtons" class="hidden flex gap-2">
+                    <button onclick="exportToPDF()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium rounded-lg shadow-sm transition">
+                        Download PDF
+                    </button>
+                    <button onclick="exportToJPEG()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg shadow-sm transition">
+                        Download JPEG
+                    </button>
+                </div>
+            </div>
+            <p id="errorMsg" class="text-rose-600 text-sm mt-2 hidden">Invalid JSON format. Please check your input.</p>
+        </div>
+
+        <!-- Main Analytics Workspace -->
+        <div id="reportContainer" class="hidden space-y-6">
+            
+            <!-- Quick Tools Header Bar -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Tools:</span>
+                    <button onclick="filterChart('all')" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-md">Reset Filters</button>
+                    <button onclick="filterChart('200')" class="px-3 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-medium rounded-md">Show 200 OK Only</button>
+                    <button onclick="filterChart('404')" class="px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-medium rounded-md">Show 404 Errors Only</button>
+                </div>
+                <div class="text-xs text-slate-500 font-mono">
+                    Endpoints Analyzed: <span id="endpointCount" class="font-bold text-slate-800">0</span>
+                </div>
+            </div>
+
+            <!-- Printable Report Document -->
+            <div id="printableArea" class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 space-y-8">
+                
+                <!-- Report Header -->
+                <div class="flex justify-between items-start border-b border-slate-200 pb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">API Performance & Health Dashboard</h2>
+                        <p class="text-xs text-slate-500 mt-1">Generated At: <span id="genDate" class="font-mono"></span></p>
+                    </div>
+                    <div class="text-right">
+                        <span id="reliabilityBadge" class="px-3 py-1 bg-rose-100 text-rose-700 font-semibold text-xs rounded-full border border-rose-200">
+                            Status: Degraded
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Metric Overview Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Volume</p>
+                        <p id="totalRequests" class="text-2xl font-bold text-slate-900 mt-1">-</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Avg Latency</p>
+                        <p id="avgLatency" class="text-2xl font-bold text-indigo-600 mt-1">-</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Overall Success Rate</p>
+                        <p id="successRate" class="text-2xl font-bold text-slate-900 mt-1">-</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Bulk Execution Runs</p>
+                        <p id="bulkRuns" class="text-2xl font-bold text-slate-900 mt-1">-</p>
+                    </div>
+                </div>
+
+                <!-- Diagnostic Calculators & Tools Bar -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100">
+                    <div>
+                        <p class="text-xs font-semibold text-indigo-900">Max Latency Spike</p>
+                        <p id="maxLatency" class="text-lg font-bold text-indigo-700 mt-1">0 ms</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-indigo-900">Total Bulk Requests Attempted</p>
+                        <p id="bulkTotalReqs" class="text-lg font-bold text-indigo-700 mt-1">0</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-indigo-900">Error Failure Rate (Bulk)</p>
+                        <p id="bulkFailureRate" class="text-lg font-bold text-rose-600 mt-1">0%</p>
+                    </div>
+                </div>
+
+                <!-- Visual Graphs Grid -->
+                <div class="space-y-6">
+                    <h3 class="text-lg font-bold text-slate-900">Performance Visualizations</h3>
+                    
+                    <!-- Line & Bar Graphs Section -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Recent Latency Trend (Line Graph)</h4>
+                            <div class="relative h-56 w-full">
+                                <canvas id="latencyLineChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Request Throughput by Bulk Run (Bar Graph)</h4>
+                            <div class="relative h-56 w-full">
+                                <canvas id="throughputChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Distribution Charts -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">HTTP Method Mix</h4>
+                            <div class="relative h-52 w-full flex justify-center">
+                                <canvas id="methodChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">HTTP Response Status Distribution</h4>
+                            <div class="relative h-52 w-full flex justify-center">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Request Log Table -->
+                <div>
+                    <h3 class="text-base font-semibold text-slate-900 mb-3">Recent Execution Logs</h3>
+                    <div class="overflow-x-auto rounded-lg border border-slate-200">
+                        <table class="w-full text-left text-xs text-slate-600">
+                            <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3">Method</th>
+                                    <th class="p-3">Endpoint URL</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3">Latency</th>
+                                    <th class="p-3">Payload Size</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rawHistoryBody" class="divide-y divide-slate-200 bg-white"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Bulk Execution History Table -->
+                <div>
+                    <h3 class="text-base font-semibold text-slate-900 mb-3">Bulk Performance Logs</h3>
+                    <div class="overflow-x-auto rounded-lg border border-slate-200">
+                        <table class="w-full text-left text-xs text-slate-600">
+                            <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3">Method</th>
+                                    <th class="p-3">Target Endpoint</th>
+                                    <th class="p-3">Total Batch</th>
+                                    <th class="p-3">Failures</th>
+                                    <th class="p-3">Throughput</th>
+                                    <th class="p-3">Run State</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bulkHistoryBody" class="divide-y divide-slate-200 bg-white"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let latencyLineChartInstance = null;
+        let throughputChartInstance = null;
+        let methodChartInstance = null;
+        let statusChartInstance = null;
+        let parsedDataCache = null;
+
+        function loadSampleData() {
+            const sample = {
+                "generatedAt": "2026-09-06T06:13:14.970Z",
+                "summary": {
+                    "total": 321128,
+                    "avgTime": 1,
+                    "successRate": 0,
+                    "statusCodes": { "200": 5, "404": 3 },
+                    "recentLatency": [782, 16, 7, 9, 10, 8, 841, 32],
+                    "bulkRuns": 9,
+                    "bulkTotalRequests": 321120,
+                    "bulkSuccessRate": 0
+                },
+                "rawHistory": [
+                    { "id": 1, "url": "http://localhost:3000/newdata", "method": "POST", "status": 404, "time": 32, "size": "0.14" },
+                    { "id": 2, "url": "https://server-01-v2cx.onrender.com/health", "method": "GET", "status": 200, "time": 841, "size": "0.02" },
+                    { "id": 3, "url": "http://localhost:3000/", "method": "POST", "status": 404, "time": 8, "size": "0.14" },
+                    { "id": 4, "url": "http://localhost:3000/", "method": "GET", "status": 200, "time": 10, "size": "0.03" },
+                    { "id": 5, "url": "http://localhost:3000/newdata", "method": "GET", "status": 404, "time": 9, "size": "0.14" },
+                    { "id": 6, "url": "http://localhost:3000/", "method": "GET", "status": 200, "time": 7, "size": "0.03" },
+                    { "id": 7, "url": "http://localhost:3000/", "method": "GET", "status": 200, "time": 16, "size": "0.03" },
+                    { "id": 8, "url": "https://server-01-v2cx.onrender.com/health", "method": "GET", "status": 200, "time": 782, "size": "0.02" }
+                ],
+                "bulkHistory": [
+                    { "method": "POST", "url": "http://localhost:3000/newdata", "total": 100000, "failures": 37437, "throughput": "620.29", "canceled": true },
+                    { "method": "POST", "url": "http://localhost:3000/newdata", "total": 100000, "failures": 6689, "throughput": "111.27", "canceled": true },
+                    { "method": "POST", "url": "http://localhost:3000/newdata", "total": 100000, "failures": 20335, "throughput": "338.91", "canceled": true },
+                    { "method": "POST", "url": "http://localhost:3000/newdata", "total": 10000, "failures": 10000, "throughput": "311.07", "canceled": false },
+                    { "method": "POST", "url": "http://localhost:3000/newdata", "total": 10000, "failures": 10000, "throughput": "269.20", "canceled": false },
+                    { "method": "POST", "url": "http://localhost:3000/newdata", "total": 1000, "failures": 1000, "throughput": "352.61", "canceled": false },
+                    { "method": "POST", "url": "http://localhost:3000/newdata", "total": 100, "failures": 100, "throughput": "253.81", "canceled": false },
+                    { "method": "POST", "url": "http://localhost:3000/newdata", "total": 10, "failures": 3, "throughput": "2.90", "canceled": true },
+                    { "method": "GET", "url": "http://localhost:3000/", "total": 10, "failures": 9, "throughput": "8.10", "canceled": true }
+                ]
+            };
+            document.getElementById('jsonInput').value = JSON.stringify(sample, null, 2);
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            const input = document.getElementById('jsonInput').value;
+            const errorMsg = document.getElementById('errorMsg');
+            
+            try {
+                parsedDataCache = JSON.parse(input);
+                const data = parsedDataCache;
+                errorMsg.classList.add('hidden');
+                
+                // Populate Metrics
+                document.getElementById('genDate').innerText = new Date(data.generatedAt || Date.now()).toLocaleString();
+                document.getElementById('totalRequests').innerText = (data.summary.total || 0).toLocaleString();
+                document.getElementById('avgLatency').innerText = `${data.summary.avgTime || 0} ms`;
+                document.getElementById('successRate').innerText = `${data.summary.successRate || 0}%`;
+                document.getElementById('bulkRuns').innerText = data.summary.bulkRuns || 0;
+
+                // Tool Calculations
+                const latencies = data.summary.recentLatency || [];
+                document.getElementById('maxLatency').innerText = latencies.length ? `${Math.max(...latencies)} ms` : 'N/A';
+                document.getElementById('bulkTotalReqs').innerText = (data.summary.bulkTotalRequests || 0).toLocaleString();
+                
+                const uniqueEndpoints = new Set((data.rawHistory || []).map(i => i.url));
+                document.getElementById('endpointCount').innerText = uniqueEndpoints.size;
+
+                const totalBulkFailures = (data.bulkHistory || []).reduce((acc, curr) => acc + (curr.failures || 0), 0);
+                const totalBulkRequests = (data.bulkHistory || []).reduce((acc, curr) => acc + (curr.total || 0), 0);
+                const failRate = totalBulkRequests ? ((totalBulkFailures / totalBulkRequests) * 100).toFixed(1) : 0;
+                document.getElementById('bulkFailureRate').innerText = `${failRate}%`;
+
+                // Render Tables
+                renderTables(data.rawHistory || [], data.bulkHistory || []);
+
+                // Render Enhanced Charts
+                renderCharts(data);
+
+                document.getElementById('reportContainer').classList.remove('hidden');
+                document.getElementById('exportButtons').classList.remove('hidden');
+            } catch (e) {
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function renderTables(rawHistory, bulkHistory) {
+            const rawBody = document.getElementById('rawHistoryBody');
+            rawBody.innerHTML = '';
+            rawHistory.forEach(item => {
+                const badgeClass = item.status === 200 ? 'badge-200' : (item.status === 404 ? 'badge-404' : 'badge-other');
+                rawBody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-semibold text-slate-800">${item.method}</td>
+                        <td class="p-3 font-mono text-slate-500">${item.url}</td>
+                        <td class="p-3"><span class="badge ${badgeClass}">${item.status}</span></td>
+                        <td class="p-3">${item.time} ms</td>
+                        <td class="p-3">${item.size} KB</td>
+                    </tr>
+                `;
+            });
+
+            const bulkBody = document.getElementById('bulkHistoryBody');
+            bulkBody.innerHTML = '';
+            bulkHistory.forEach(item => {
+                bulkBody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-semibold text-slate-800">${item.method}</td>
+                        <td class="p-3 font-mono text-slate-500">${item.url}</td>
+                        <td class="p-3">${item.total.toLocaleString()}</td>
+                        <td class="p-3 text-rose-600 font-medium">${item.failures.toLocaleString()}</td>
+                        <td class="p-3">${item.throughput} req/s</td>
+                        <td class="p-3">${item.canceled ? '<span class="text-amber-600 font-medium">Canceled</span>' : '<span class="text-emerald-600 font-medium">Completed</span>'}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterChart(status) {
+            if (!parsedDataCache) return;
+            if (status === 'all') {
+                renderTables(parsedDataCache.rawHistory, parsedDataCache.bulkHistory);
+            } else {
+                const filteredRaw = parsedDataCache.rawHistory.filter(i => i.status.toString() === status);
+                renderTables(filteredRaw, parsedDataCache.bulkHistory);
+            }
+        }
+
+        function renderCharts(data) {
+            if (latencyLineChartInstance) latencyLineChartInstance.destroy();
+            if (throughputChartInstance) throughputChartInstance.destroy();
+            if (methodChartInstance) methodChartInstance.destroy();
+            if (statusChartInstance) statusChartInstance.destroy();
+
+            // 1. Latency Line Chart (Smooth Trend)
+            const latencyCtx = document.getElementById('latencyLineChart').getContext('2d');
+            const latencyValues = data.summary.recentLatency || [];
+            latencyLineChartInstance = new Chart(latencyCtx, {
+                type: 'line',
+                data: {
+                    labels: latencyValues.map((_, i) => `Req #${i + 1}`),
+                    datasets: [{
+                        label: 'Latency (ms)',
+                        data: latencyValues,
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#4f46e5'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // 2. Throughput Bar Chart
+            const throughputCtx = document.getElementById('throughputChart').getContext('2d');
+            const bulkRuns = data.bulkHistory || [];
+            throughputChartInstance = new Chart(throughputCtx, {
+                type: 'bar',
+                data: {
+                    labels: bulkRuns.map((_, i) => `Run #${i + 1}`),
+                    datasets: [{
+                        label: 'Throughput (req/s)',
+                        data: bulkRuns.map(r => parseFloat(r.throughput)),
+                        backgroundColor: '#0ea5e9',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // 3. HTTP Method Distribution Chart
+            const methodCtx = document.getElementById('methodChart').getContext('2d');
+            const methodCounts = {};
+            (data.rawHistory || []).forEach(item => {
+                methodCounts[item.method] = (methodCounts[item.method] || 0) + 1;
+            });
+            methodChartInstance = new Chart(methodCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(methodCounts),
+                    datasets: [{
+                        data: Object.values(methodCounts),
+                        backgroundColor: ['#6366f1', '#ec4899', '#8b5cf6', '#14b8a6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right' } }
+                }
+            });
+
+            // 4. Status Code Chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            const statusCodes = data.summary.statusCodes || {};
+            statusChartInstance = new Chart(statusCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(statusCodes).map(code => `HTTP ${code}`),
+                    datasets: [{
+                        data: Object.values(statusCodes),
+                        backgroundColor: ['#10b981', '#f43f5e', '#f59e0b', '#3b82f6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right' } }
+                }
+            });
+        }
+
+        function exportToPDF() {
+            const element = document.getElementById('printableArea');
+            const opt = {
+                margin: 0.2,
+                filename: 'advanced-api-analytics-report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function exportToJPEG() {
+            const element = document.getElementById('printableArea');
+            html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'advanced-api-analytics-report.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>

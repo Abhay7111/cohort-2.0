@@ -12,6 +12,14 @@ app.get('/', (req, res) => {
     res.send('Hello world')
 })
 
+app.get('/get', async (req, res) => {
+    const note = await NoteModel.find()
+    res.status(200).json({
+        message: "Note fetched successfully",
+        note
+    })
+})
+
 app.post('/post', async (req, res) => {
     const {title, description} = req.body;
     const note = await NoteModel.create({

@@ -1,34 +1,54 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
 
 function App() {
+  
+  const [notes, setNotes] = useState([])
+  
+  console.log("Hello")
 
-  const [notes, setNotes] = useState([{
-      title: "This is title 1",
-      description: "this is description 3"
-    },
-    {
-      title: "This is title 2",
-      description: "This is description 2"
-    },
-    {
-      title: "This is title 3",
-      description: "this is description 1"
-    },
-    {
-      title: "This is title 4",
-      description: "this is description 4"
-    }])
-  axios.get('http://localhost:3000/api/note')
-  .then((res) => {
-    setNotes(res.data.Note)
-  }) 
+// ==================Get data=============================
+  function FetchNotes() {
+  axios.get('http://localhost:3000/api/notes')
+    .then((res) => {
+      setNotes(res.data.Note)
+    }) 
+    .catch(error => {console.log("API error " , error)})
+  }
+  
+  
+  useEffect(() => {
+    FetchNotes()
+  }, [])
+
+  // ================Post data from form===================
+  function handelSubmit(e) {
+    e.preventDefault()
+
+    const {title, description} = e.target
+    console.log(title.value,description.value)
+
+    axios.post('http://localhost:3000/api/postnote/', {
+      title: title.value,
+      description: description.value
+    })
+    .then(res=>{
+      console.log(res.data)
+      FetchNotes()
+    })
+  }
 
   return (
     <div className="main">
 
-      {notes.map((items) => (
-      <div className="cardOuter">
+      <form className="note-input" onSubmit={handelSubmit}>
+        <input name="title" type="text" placeholder="Add title" />
+        <input name="description" type="text" placeholder="Add description" />
+        <button>Create note</button>
+      </form>
+
+      {notes.map((items, index) => (
+      <div key={index} className="cardOuter">
         <div className="cardCont">
           <h1>{items.title}</h1>
           <p>{items.description}</p>

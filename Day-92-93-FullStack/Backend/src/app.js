@@ -12,7 +12,7 @@ app.use(cors())
 app.get('/api/health', (req, res) => {res.send("Server Heath is Ok")})
 
 // ==================Get API All Data==============
-app.get('/api/note', async (req, res) => {
+app.get('/api/notes', async (req, res) => {
     const Note = await NoteModel.find()
     res.status(200).json({
         message:"Notes fetched successfully",

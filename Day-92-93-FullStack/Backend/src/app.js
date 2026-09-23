@@ -5,10 +5,13 @@ const cors = require('cors');
 const app = express();
 app.use(express.json())
 
+
 app.use(cors())
 
+// ==================API Health====================
 app.get('/api/health', (req, res) => {res.send("Server Heath is Ok")})
 
+// ==================Get API All Data==============
 app.get('/api/note', async (req, res) => {
     const Note = await NoteModel.find()
     res.status(200).json({
@@ -17,6 +20,7 @@ app.get('/api/note', async (req, res) => {
     })
 })
 
+// ==================Add New API Data==============
 app.post('/api/postnote', async (req, res) => {
     const {title, description} = req.body
 
@@ -28,6 +32,7 @@ app.post('/api/postnote', async (req, res) => {
     })
 })
 
+// ==================Delete API Data===============
 app.delete('/api/note/:id', async (req, res) => {
     const id = req.params.id
     await NoteModel.findByIdAndDelete(id)
@@ -38,6 +43,7 @@ app.delete('/api/note/:id', async (req, res) => {
     })
 })
 
+// ==================Update API Data===============
 app.patch('/api/note/:id', async (req, res) => {
     const id = req.params.id
     const { description } = req.body
@@ -50,4 +56,5 @@ app.patch('/api/note/:id', async (req, res) => {
     })
 })
 
+// ==================Export app====================
 module.exports = app

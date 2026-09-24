@@ -1,12 +1,20 @@
 const express = require('express');
 const NoteModel = require('./Models/Notes.Model');
 const cors = require('cors');
+const path = require('path')
 
 const app = express();
 app.use(express.json())
 
 
 app.use(cors())
+
+app.use(express.static('./Public'));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname,"..",'/Public/index.html'))
+})
+
 
 // ==================API Health====================
 app.get('/api/health', (req, res) => {res.send("Server Heath is Ok")})

@@ -11,9 +11,7 @@ app.use(cors())
 
 app.use(express.static('./Public'));
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname,"..",'/Public/index.html'))
-})
+
 
 
 // ==================API Health====================
@@ -62,6 +60,10 @@ app.patch('/api/note/:id', async (req, res) => {
         "message":"Note Description updated successfully",
         description
     })
+})
+
+app.use('*name', (req, res) => {
+    res.sendFile(path.join(__dirname,"..",'/Public/index.html'))
 })
 
 // ==================Export app====================

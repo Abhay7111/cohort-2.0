@@ -9,7 +9,7 @@ app.use(express.json())
 
 app.use(cors())
 
-app.use(express.static('./Public'));
+app.use(express.static('./Public'))
 
 
 
@@ -42,7 +42,7 @@ app.post('/api/postnote', async (req, res) => {
 app.delete('/api/note/:id', async (req, res) => {
     const id = req.params.id
     await NoteModel.findByIdAndDelete(id)
-    console.log(id)
+    console.log(`Item deleted successfully: ${id}`)
     res.status(200).json({
         "message" : "Note deleted successfully",
         id

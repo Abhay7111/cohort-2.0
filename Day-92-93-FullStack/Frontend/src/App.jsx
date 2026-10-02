@@ -10,7 +10,7 @@ function App() {
 
 // ==================Get data=============================
   function FetchNotes() {
-  axios.get('http://localhost:3000/api/notes')
+  axios.get('https://cohort-2-0-jyd6.onrender.com/api/notes')
     .then((res) => {
       setNotes(res.data.Note)
     }) 
@@ -27,7 +27,7 @@ function App() {
 
     const {title, description} = e.target
 
-    axios.post('http://localhost:3000/api/postnote/', {
+    axios.post('https://cohort-2-0-jyd6.onrender.com/api/postnote/', {
       title: title.value,
       description: description.value
     })
@@ -39,7 +39,7 @@ function App() {
 
   // ================Delete note===========================
   function handelDeleteNote(id) {
-    axios.delete(`http://localhost:3000/api/note/${id}`)
+    axios.delete(`https://cohort-2-0-jyd6.onrender.com/api/note/${id}`)
     .then(res=>{
         console.log(res.data)
         FetchNotes()
@@ -52,7 +52,7 @@ function App() {
       return
     }
 
-    axios.patch(`http://localhost:3000/api/note/${editData.id}`, {
+    axios.patch(`https://cohort-2-0-jyd6.onrender.com/api/note/${editData.id}`, {
       description: editData.description
     })
       .then(() => {

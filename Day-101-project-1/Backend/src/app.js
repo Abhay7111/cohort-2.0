@@ -2,11 +2,13 @@ const express = require('express');
 const app = express();
 const userModel = require('./models/user.model');
 const cors = require('cors');
-const authRouter = require('./Routes/auth.routes')
+const authRouter = require('./Routes/auth.routes');
+const dataRouter = require('./Routes/data.routes');
 
 app.use(express.json())
 app.use(cors())
 app.use('/api/auth', authRouter)
+app.use('/api',dataRouter)
 
 app.get('/', (req, res) => {
     res.json({

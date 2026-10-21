@@ -4,12 +4,14 @@ const userModel = require('./models/user.model');
 const cors = require('cors');
 const authRouter = require('./Routes/auth.routes');
 const dataRouter = require('./Routes/data.routes');
+const postRouter = require('./Routes/post.routes');
 const cookieParser = require('cookie-parser');
 
 app.use(express.json())
 app.use(cors())
 app.use('/api/auth', authRouter)
-app.use('/api',dataRouter)
+app.use('/api/posts', postRouter)
+app.use('/api', dataRouter)
 app.use(cookieParser())
 
 app.get('/', (req, res) => {

@@ -7,7 +7,7 @@ const postSchema = new mongoose.Schema({
     },
     img_url:{
         type: String,
-        required: [true, "imgUrl is required for create an post"]
+        // required: [true, "imgUrl is required for create an post"]
     },
     user: {
         ref:"users",
@@ -18,4 +18,4 @@ const postSchema = new mongoose.Schema({
 
 const postModel = mongoose.model("posts", postSchema)
 
-module.exports = postModel
+module.exports = postModel  

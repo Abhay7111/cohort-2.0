@@ -9,10 +9,10 @@ const cookieParser = require('cookie-parser');
 
 app.use(express.json())
 app.use(cors())
+app.use(cookieParser())
 app.use('/api/auth', authRouter)
 app.use('/api/posts', postRouter)
 app.use('/api', dataRouter)
-app.use(cookieParser())
 
 app.get('/', (req, res) => {
     res.json({

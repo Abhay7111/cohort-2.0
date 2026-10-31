@@ -1,8 +1,8 @@
 const express = require('express');
 const postController = require('../controllers/post.controllers');
 const multer = require('multer');
-const uploade = multer({storage:multer.memoryStorage()})
-const userIdentify = require('../middlewares/auth.middleware')
+const uploade = multer({storage:multer.memoryStorage()});
+const userIdentify = require('../middlewares/auth.middleware');
 
 const postRouter = express.Router()
 
@@ -14,5 +14,8 @@ postRouter.get('/', userIdentify , postController.getPostsController)
 
 // GET specific post belong user
 postRouter.get('/details/:postId', userIdentify , postController.getPostDetailsController)
+
+// POST likes
+postRouter.post('/like/:postid', userIdentify, postController.likeController)
 
 module.exports = postRouter

@@ -28,29 +28,31 @@ app.use('/api', dataRouter)
 // This is for user can follow and unfollow
 app.use('/api/users', userRouter)
 
+
+// This is root router
 app.get('/', (req, res) => {
     res.json({
         message: "server is runnig"
     })
 })
  
-app.post('/register', async (req, res) => {
-    const {email, password} = req.body
+// app.post('/register', async (req, res) => {
+//     const {email, password} = req.body
 
-    const existEmail = await userModel.findOne({ email });
+//     const existEmail = await userModel.findOne({ email });
 
-    const user = await userModel.create({ email, password })
+//     const user = await userModel.create({ email, password })
 
-    if(!existEmail){
-        return res.status(409).json({
-            message: "Email allready exist",
-            user
-        })
-    }
+//     if(!existEmail){
+//         return res.status(409).json({
+//             message: "Email allready exist",
+//             user
+//         })
+//     }
 
-    res.status(201).json({
-        message:"User registered successfully"
-    })
-})
+//     res.status(201).json({
+//         message:"User registered successfully"
+//     })
+// })
 
 module.exports = app

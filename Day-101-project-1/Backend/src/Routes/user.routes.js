@@ -12,4 +12,6 @@ userRouter.post('/follow/:username', identifyUser, userController.followUserCont
 
 userRouter.delete('/follow/:username', identifyUser, userController.unfollowUserController)
 
+userRouter.patch('/follower/:followerUsername', identifyUser, userController.followerStatusController)
+
 module.exports = userRouter

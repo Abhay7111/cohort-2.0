@@ -63,8 +63,45 @@ async function unfollowUserController(req, res) {
         message: `you unfollow ${followeeUsername}`
     })
 }
+ 
+async function followerStatusController(req, res) {
+    const followeeUsername = req.user.username
+    const followerUsername = req.params.followerUsername
+    const status = req.body && req.body.status
 
+    if (!followerUsername || !["pending", "accepted", "rejected"].includes(status)) {
+        return res.status(400).json({
+            message: "A follower username and a valid status are required"
+        })
+    }
+
+    const updateStatus = await followModel.findOneAndUpdate(
+        {
+            follower: followerUsername,
+            followee: followeeUsername
+        },
+        {
+            $set: { status }
+        },
+        {
+            new: true,
+            runValidators: true
+        }
+    )
+
+    if(!updateStatus) {
+        return res.status(404).json({
+            message: "Follow request not found"
+        })
+    }
+
+    res.status(200).json({
+        message: `[ ${updateStatus.status} ]: successful`,
+        status_details: updateStatus
+    })
+}
 module.exports = {
     followUserController,
-    unfollowUserController
+    unfollowUserController,
+    followerStatusController
 }

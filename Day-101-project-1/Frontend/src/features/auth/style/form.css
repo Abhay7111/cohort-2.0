@@ -1,0 +1,64 @@
+main {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+main .form-container {
+  width: 400px;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+main .form-container h1 {
+  font-size: 4rem;
+  margin-bottom: 40px;
+  color: whitesmoke;
+}
+main .form-container form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+main .form-container form input {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+}
+main .form-container form .buttons {
+  width: 100%;
+  display: flex;
+  gap: 15px;
+}
+main .form-container form .buttons button {
+  width: 50%;
+  padding: 15px;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all ease-in-out 200ms;
+  background-color: rgb(247, 206, 153);
+}
+main .form-container form .buttons button:hover {
+  background-color: rgb(95, 79, 58);
+  color: whitesmoke;
+}
+main .form-container form .buttons button:nth-child(2) {
+  font-size: 1rem;
+  font-weight: 500;
+}
+main .form-container form P .link {
+  color: rgb(247, 206, 153);
+}/*# sourceMappingURL=form.css.map */

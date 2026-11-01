@@ -35,7 +35,7 @@ async function registerController(req, res) {
             id: createUser._id,
             username: createUser.username
         },
-        process.env.JWT_SCREAT,
+        process.env.JWT_SECRET,
         {expiresIn: "1d"}    
     )
 

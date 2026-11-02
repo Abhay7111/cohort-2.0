@@ -11,4 +11,4 @@ dataRouter.get('/data', async (req, res) => {
 })
 
 
-module.exports = dataRouter
+module.exports = dataRouter  

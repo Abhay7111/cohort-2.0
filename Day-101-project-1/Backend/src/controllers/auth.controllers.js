@@ -58,17 +58,13 @@ async function loginController(req, res) {
             {username},
             {email}
         ]
-    })
+    }).select("+password")
 
     if(!user) {
         return res.status(404).json({
             error: "user not found"
         })
     }
-
-    // const hash = crypto.createHash('sha256').update(password).digest('hex');
-
-    // const isPasswordValid = hash == user.password
 
     const isPasswordValid = await bcryptjs.compare(password, user.password)
 

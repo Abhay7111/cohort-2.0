@@ -18,4 +18,7 @@ postRouter.get('/details/:postId', userIdentify , postController.getPostDetailsC
 // POST likes
 postRouter.post('/like/:postid', userIdentify, postController.likeController)
 
+// GET get all the post in DB
+postRouter.get('/feed', userIdentify, postController.feedController)
+
 module.exports = postRouter

@@ -30,6 +30,7 @@ async function registerController(req, res) {
         profile_image
     })
 
+    // Token will expires in = 1Day
     const token = jwt.sign(
         { 
             id: createUser._id,
@@ -74,13 +75,14 @@ async function loginController(req, res) {
         })
     }
 
+    // Token will expires in = 1Day
     const token = jwt.sign(
         {
             id: user._id,
             username: user.username
         },
         process.env.JWT_SECRET,
-        {expiresIn: "31m"}
+        {expiresIn: "1d"}
     );
 
     res.cookie("token", token);

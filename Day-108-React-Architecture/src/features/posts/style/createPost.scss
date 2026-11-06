@@ -1,0 +1,9 @@
+.post-image-lable{
+    background-color: rgb(233, 233, 233);
+    color: #1a1a1a;
+
+    &:active{
+        background-color: #d20c3d;
+        color: aliceblue;
+    }
+}

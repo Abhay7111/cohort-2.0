@@ -80,7 +80,7 @@ async function loginController(req, res) {
             username: user.username
         },
         process.env.JWT_SECRET,
-        {expiresIn: "1d"}
+        {expiresIn: "31m"}
     );
 
     res.cookie("token", token);

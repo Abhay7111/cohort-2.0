@@ -17,7 +17,7 @@ function Post({user, post}) {
       <div className="bottom">
         <div className="buttons">
           <button>
-            <i class="ri-heart-line"></i>
+            <i className={post.isLiked ? "ri-heart-fill like" : "ri-heart-line"}></i>
           </button>
           <button>
             <i class="ri-chat-1-line"></i>

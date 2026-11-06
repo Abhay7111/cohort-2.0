@@ -72,12 +72,19 @@ main {
           display: flex;
           align-items: center;
           gap: 25px;
+
           button {
             background-color: transparent;
             border: none;
             @include font-color();
             font-size: 1.9rem;
             cursor: pointer;
+
+            .like{
+                color: red;
+                text-shadow: 2px 2px 6px rgba(250, 39, 39, 0.603);
+                // box-shadow: 2px 3px 1px solid red;
+            }
           }
         }
       }

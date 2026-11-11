@@ -102,6 +102,48 @@ async function likeController(req, res) {
     })
 }
 
+async function disLikeController(req, res) {
+    const postId = req.params.postid
+    const username = req.user.username
+
+    const isLiked = await likeModel.findOneAndDelete({
+        post: postId,
+        user: username
+    })
+
+    if(!isLiked) {
+        return res.status(400).json({
+            message: "Post didn't like"
+        })
+    }
+
+    // await likeModel.findOneAndDelete({_id: isLiked._id})
+
+    return res.status(200).json({
+        message: "Post dislike successfully"
+    })
+}
+
+// async function disLikeController(req, res) {
+//     const postId = req.params.postid
+//     const username = req.user.username
+
+//     const deletedLike = await likeModel.findOneAndDelete({
+//         post: postId,
+//         user: username
+//     })
+
+//     if (!deletedLike) {
+//         return res.status(400).json({
+//             message: "You haven't liked this post"
+//         })
+//     }
+
+//     return res.status(200).json({
+//         message: "Post disliked successfully"
+//     })
+// }
+
 async function feedController(req, res) {
     const user = req.user
 
@@ -129,5 +171,6 @@ module.exports = {
     getPostsController,
     getPostDetailsController,
     likeController,
+    disLikeController,
     feedController
 }

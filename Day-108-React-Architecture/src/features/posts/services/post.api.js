@@ -1,12 +1,12 @@
 import axios from 'axios'
 
 const api = axios.create({
-    baseURL: "http://localhost:3000/api",
+    baseURL: "http://localhost:3000",
     withCredentials: true
 })
 
 export async function getFeed() {
-    const response = await api.get('/posts/feed')
+    const response = await api.get('/api/posts/feed')
     const { posts } = response.data
 
     if (!Array.isArray(posts)) {
@@ -22,7 +22,17 @@ export async function createPost(imageFile, caption) {
     formData.append('img_url', imageFile)
     formData.append('caption', caption)
 
-    const response = await api.post('/posts', formData)
+    const response = await api.post('/api/posts', formData)
 
     return response.data
+}
+
+export async function likePost(postid) {
+    const response = await api.post("/api/posts/like/" + postid)
+    return response.data
+}
+
+export async function disLikePost(postid){
+    const response = await api.delete("/api/posts/dislike/" + postid)
+    return response.data 
 }

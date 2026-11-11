@@ -1,6 +1,9 @@
 import React from "react";
+import { usePost } from "../hook/usePost";
 
-function Post({user, post}) {
+function Post({user, post, loading, handelLike, handelDisLike}) {
+
+
   return (
     <div className="posts">
       <div className="user">
@@ -16,7 +19,9 @@ function Post({user, post}) {
       />
       <div className="bottom">
         <div className="buttons">
-          <button>
+          <button
+          onClick={() => {post.isLiked?handelDisLike(post._id) : handelLike(post._id)}}
+          >
             <i className={post.isLiked ? "ri-heart-fill like" : "ri-heart-line"}></i>
           </button>
           <button>

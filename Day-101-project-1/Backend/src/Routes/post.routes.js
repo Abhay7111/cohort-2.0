@@ -18,6 +18,9 @@ postRouter.get('/details/:postId', userIdentify , postController.getPostDetailsC
 // POST likes
 postRouter.post('/like/:postid', userIdentify, postController.likeController)
 
+// POST dislike
+postRouter.delete('/dislike/:postid', userIdentify, postController.disLikeController)
+
 // GET get all the post in DB
 postRouter.get('/feed', userIdentify, postController.feedController)
 
